@@ -1,8 +1,7 @@
 import * as path from 'path';
 import { DisposableObject } from "semmle-vscode-utils";
-import { commands, Event, EventEmitter, ExtensionContext, ProviderResult, TreeDataProvider, TreeItem, Uri, window, workspace } from "vscode";
+import { commands, Event, EventEmitter, ExtensionContext, ProviderResult, TreeDataProvider, TreeItem, Uri, window } from "vscode";
 import * as cli from './cli';
-import * as helpers from './helpers';
 import { DatabaseItem, DatabaseManager } from "./databases";
 import { logger } from "./logging";
 import { clearCacheInDatabase, upgradeDatabase, UserCancellationException } from "./queries";

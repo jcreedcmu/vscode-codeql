@@ -113,7 +113,6 @@ export async function parseResultSetSchema(d: StreamDigester): Promise<ResultSet
 }
 
 async function parseString(d: StreamDigester, pool: StringPool): Promise<string> {
-  const position = d.position;
   const stringOffset = await d.readLEB128UInt32();
   const value = pool.getString(stringOffset);
   return value;
@@ -134,7 +133,7 @@ async function parseLocation(d: StreamDigester, t: LocationStyle, pool: StringPo
       return { t, file, lineStart, colStart, lineEnd, colEnd };
     }
     case LocationStyle.WholeFile:
-      throw new Error('Whole-file locations should appear as string locations in BQRS files.')
+      throw new Error('Whole-file locations should appear as string locations in BQRS files.');
   }
   throw new Error(`Unknown Location Style ${t}`);
 }

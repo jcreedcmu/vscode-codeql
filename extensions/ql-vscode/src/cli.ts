@@ -106,7 +106,7 @@ export class CodeQLCliServer implements Disposable {
       this.logger.log('Sending shutdown request');
       try {
         this.process.stdin.write(JSON.stringify(["shutdown"]), "utf8");
-        this.process.stdin.write(this.nullBuffer)
+        this.process.stdin.write(this.nullBuffer);
         this.logger.log('Sent shutdown request');
       } catch (e) {
         // We are probably fine here, the process has already closed stdin.

@@ -168,9 +168,9 @@ export class InterfaceManager extends DisposableObject {
       }
       case "resultViewLoaded":
         this._panelLoaded = true;
-        this._panelLoadedCallBacks.forEach(cb => cb())
+        this._panelLoadedCallBacks.forEach(cb => cb());
         this._panelLoadedCallBacks = [];
-        break
+        break;
       case 'changeSort': {
         if (this._displayedEvaluationInfo === undefined) {
           showAndLogErrorMessage("Failed to sort results since evaluation info was unknown.");

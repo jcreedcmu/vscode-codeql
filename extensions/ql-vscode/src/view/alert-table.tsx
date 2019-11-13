@@ -231,7 +231,7 @@ export class PathTable extends React.Component<PathTableProps, PathTableState> {
 
     const toggler: (indices: number[]) => (e: React.MouseEvent) => void = (indices) => {
       return (e) => this.toggle(e, indices);
-    }
+    };
 
     const noResults = <span>No Results</span>; // TODO: Maybe make this look nicer
 
@@ -241,7 +241,7 @@ export class PathTable extends React.Component<PathTableProps, PathTableState> {
     if (resultSet.sarif.runs[0].results === undefined) return noResults;
 
     resultSet.sarif.runs[0].results.forEach((result, resultIndex) => {
-      const text = result.message.text || '[no text]'
+      const text = result.message.text || '[no text]';
       const msg: JSX.Element[] =
         result.relatedLocations === undefined ?
           [<span>{text}</span>] :
