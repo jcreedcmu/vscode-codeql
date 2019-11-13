@@ -107,7 +107,7 @@ export class RushContext {
           if (dependencyVersion.startsWith('/')) {
             // This is a package with a peer dependency. We need to extract the actual package
             // version.
-            const match = dependencyVersion.match(peerDependencyVersionPattern)
+            const match = dependencyVersion.match(peerDependencyVersionPattern);
             if (match) {
               if (match[1] !== dependencyName) {
                 throw new Error(`Mismatch between package name '${dependencyName}' and peer dependency specifier '${dependencyVersion}'.`);

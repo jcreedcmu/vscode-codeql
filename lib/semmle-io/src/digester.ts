@@ -85,7 +85,6 @@ export class StreamDigester {
   private getSeamBuffer(byteCount: number, previousBuffer: Buffer, previousOffset: number,
     previousByteCount: number): Buffer {
 
-    const previousBytes = previousBuffer.subarray(previousOffset, previousByteCount);
     if (this.seamBuffer.length < byteCount) {
       // Start at double the current length, or `MIN_SEAM_BUFFER_LENGTH`, whichever is larger.
       let newSeamBufferLength = Math.max(this.seamBuffer.length * 2,

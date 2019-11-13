@@ -210,7 +210,7 @@ export interface EvaluationInfo {
 async function checkAndConfirmDatabaseUpgrade(qs: qsClient.QueryServerClient, db: DatabaseItem, targetDbScheme: vscode.Uri, upgradesDirectories: vscode.Uri[]):
   Promise<messages.UpgradeParams | undefined> {
   if (db.contents === undefined || db.contents.dbSchemeUri === undefined) {
-    helpers.showAndLogErrorMessage("Database is invalid, and cannot be upgraded.")
+    helpers.showAndLogErrorMessage("Database is invalid, and cannot be upgraded.");
     return;
   }
   const params: messages.UpgradeParams = {
@@ -229,7 +229,7 @@ async function checkAndConfirmDatabaseUpgrade(qs: qsClient.QueryServerClient, db
     return;
   }
   finally {
-    qs.logger.log('Done checking database upgrade.')
+    qs.logger.log('Done checking database upgrade.');
   }
 
   const checkedUpgrades = checkUpgradeResult.checkedUpgrades;
@@ -628,6 +628,6 @@ export async function compileAndRunQueryAgainstDatabase(
         name: db.name,
         databaseUri: db.databaseUri.toString(true)
       }
-    }
+    };
   }
 }

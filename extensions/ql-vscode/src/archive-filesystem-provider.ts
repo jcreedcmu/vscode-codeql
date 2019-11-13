@@ -297,7 +297,6 @@ export class ArchiveFileSystemProvider implements vscode.FileSystemProvider {
 export const zipArchiveScheme = 'codeql-zip-archive';
 
 export function activate(ctx: vscode.ExtensionContext) {
-  const schemeRootUri = vscode.Uri.parse(zipArchiveScheme + ':/');
   ctx.subscriptions.push(vscode.workspace.registerFileSystemProvider(
     zipArchiveScheme,
     new ArchiveFileSystemProvider(),

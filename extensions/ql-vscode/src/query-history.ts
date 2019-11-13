@@ -3,7 +3,6 @@ import { ExtensionContext, window as Window } from 'vscode';
 import { EvaluationInfo } from './queries';
 import * as helpers from './helpers';
 import * as messages from './messages';
-import * as path from 'path';
 /**
  * query-history.ts
  * ------------
