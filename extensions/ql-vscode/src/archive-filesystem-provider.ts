@@ -49,7 +49,7 @@ export type Entry = File | Directory;
  * dirMap['/foo'] = {'bar': vscode.FileType.Directory}
  * dirMap['/foo/bar'] = {'baz': vscode.FileType.File}
  */
-export type DirectoryHierarchyMap = { [k: string]: { [e: string]: vscode.FileType } };
+export type DirectoryHierarchyMap = Map<string, Map<string, vscode.FileType>>;
 
 export type ZipFileReference = { sourceArchiveZipPath: string, pathWithinSourceArchive: string };
 
@@ -121,7 +121,7 @@ function ensureFile(map: DirectoryHierarchyMap, file: string) {
     throw new Error(error);
   }
   ensureDir(map, dirname);
-  map[dirname][path.basename(file)] = vscode.FileType.File;
+  map.get(dirname)!.set(path.basename(file), vscode.FileType.File);
 }
 
 /**
@@ -129,11 +129,11 @@ function ensureFile(map: DirectoryHierarchyMap, file: string) {
  */
 function ensureDir(map: DirectoryHierarchyMap, dir: string) {
   const parent = path.dirname(dir);
-  if (map[dir] === undefined) {
-    map[dir] = {};
+  if (!map.has(dir)) {
+    map.set(dir, new Map);
     if (dir !== parent) { // not the root directory
       ensureDir(map, parent);
-      map[parent][path.basename(dir)] = vscode.FileType.Directory;
+      map.get(parent)!.set(path.basename(dir), vscode.FileType.Directory);
     }
   }
 }
@@ -145,17 +145,17 @@ type Archive = {
 
 export class ArchiveFileSystemProvider implements vscode.FileSystemProvider {
   private readOnlyError = vscode.FileSystemError.NoPermissions('write operation attempted, but source archive filesystem is readonly');
-  private archives: { [zipPath: string]: Archive } = {};
+  private archives: Map<string, Archive> = new Map;
 
   private async getArchive(zipPath: string): Promise<Archive> {
-    if (this.archives[zipPath] === undefined) {
+    if (!this.archives.has(zipPath)) {
       if (!await fs.pathExists(zipPath))
         throw vscode.FileSystemError.FileNotFound(zipPath);
-      const archive: Archive = { unzipped: await unzipper.Open.file(zipPath), dirMap: {} };
+      const archive: Archive = { unzipped: await unzipper.Open.file(zipPath), dirMap: new Map };
       archive.unzipped.files.forEach(f => { ensureFile(archive.dirMap, path.resolve('/', f.path)); });
-      this.archives[zipPath] = archive;
+      this.archives.set(zipPath, archive);
     }
-    return this.archives[zipPath];
+    return this.archives.get(zipPath)!;
   }
 
   root = new Directory('');
@@ -169,7 +169,8 @@ export class ArchiveFileSystemProvider implements vscode.FileSystemProvider {
   async readDirectory(uri: vscode.Uri): Promise<[string, vscode.FileType][]> {
     const ref = decodeSourceArchiveUri(uri);
     const archive = await this.getArchive(ref.sourceArchiveZipPath);
-    const result = Object.entries(archive.dirMap[ref.pathWithinSourceArchive]);
+    let contents = archive.dirMap.get(ref.pathWithinSourceArchive);
+    const result = contents === undefined ? [] : Array.from(contents.entries());
     if (result === undefined) {
       throw vscode.FileSystemError.FileNotFound(uri);
     }
@@ -231,7 +232,7 @@ export class ArchiveFileSystemProvider implements vscode.FileSystemProvider {
         return new Directory(reqPath);
       }
     }
-    if (archive.dirMap[reqPath] !== undefined) {
+    if (archive.dirMap.has(reqPath)) {
       return new Directory(reqPath);
     }
     throw vscode.FileSystemError.FileNotFound(uri);
